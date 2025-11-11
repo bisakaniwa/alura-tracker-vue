@@ -22,3 +22,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Styles
+This project uses Bulma for inner styles and FontAwesome for icons.
+
+Light mode works better if you're not already using dark mode on your browser.
