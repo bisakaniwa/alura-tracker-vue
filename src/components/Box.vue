@@ -12,7 +12,8 @@ export default defineComponent({
   data() {
     return {
       estilo: {
-        background: '#FAF0CA'
+        background: '#FAF0CA',
+        borderRadius: '15px',
       }
     }
   }

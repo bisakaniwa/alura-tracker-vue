@@ -22,6 +22,6 @@ export default defineComponent({
 
 <style>
 .display {
-  color: var(--texto-primario);
+  color: var(--texto-tarefa);
 }
 </style>
