@@ -37,11 +37,13 @@ main {
   --bg-primario: #fff;
   --texto-primario: #000;
   --texto-tarefa: grey;
+  --texto-projetos: grey;
 }
 
 main.modo-escuro {
   --bg-primario: #2b2d42;
   --texto-primario: #ddd;
+  --texto-projetos: #ddd;
 }
 
 .conteudo {
