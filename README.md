@@ -23,6 +23,9 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### Inner Engines
+This project uses Vue Router for SPA navigation and Vuex for global state management.
+
 ### Styles
 This project uses Bulma for inner styles and FontAwesome for icons.
 
