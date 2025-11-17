@@ -1,0 +1,23 @@
+{
+  "projetos": [
+    {
+      "id": "0",
+      "nome": "Plano de Estudos Avançados"
+    },
+    {
+      "id": "2025-11-14T19:54:30.674Z",
+      "nome": "Vuex"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": "2025-11-14T20:10:43.908Z",
+      "duracaoEmSegundos": 4,
+      "descricao": "Modularização de Contextos",
+      "projeto": {
+        "id": "2025-11-14T19:54:30.674Z",
+        "nome": "Vuex"
+      }
+    }
+  ]
+}

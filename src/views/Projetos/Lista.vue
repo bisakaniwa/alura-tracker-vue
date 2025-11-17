@@ -16,8 +16,8 @@
       </thead>
       <tbody>
         <tr v-for="projeto in projetos" :key="projeto.id">
-          <td>{{ projeto.id }}</td>
-          <td>{{ projeto.nome }}</td>
+          <td class="table-cells-centered">{{ projeto.id }}</td>
+          <td class="table-cells-centered">{{ projeto.nome }}</td>
           <td>
             <router-link :to="`/projetos/${projeto.id}`" class="button">
               <span class="icon is-small">
@@ -38,27 +38,35 @@
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { EXCLUIR_PROJETO } from "@/store/tipo-mutacoes";
 import { computed, defineComponent } from "vue";
 import useNotificacao from '@/hooks/notificador';
 import { TipoNotificacao } from "@/interfaces/INotificacao";
+import { OBTER_PROJETOS, REMOVER_PROJETO } from "@/store/tipo-acoes";
 
 export default defineComponent({
   name: 'ListaProjetos',
   methods: {
     excluir(id: string) {
-      this.store.commit(EXCLUIR_PROJETO, id);
-      this.notificar(TipoNotificacao.SUCESSO, 'Projeto excluído!', 'Excluímos seu projeto com sucesso :)')
+      this.store.dispatch(REMOVER_PROJETO, id).then(() => {
+        this.notificar(TipoNotificacao.SUCESSO, 'Projeto excluído!', 'Excluímos seu projeto com sucesso :)')
+      });
     },
   },
   setup() {
     const store = useStore();
     const { notificar } = useNotificacao();
+    store.dispatch(OBTER_PROJETOS);
     return {
-      projetos: computed(() => store.state.projetos),
+      projetos: computed(() => store.state.projeto.projetos),
       store,
       notificar,
     };
   },
 });
 </script>
+
+<style scoped>
+.table-cells-centered {
+  vertical-align: middle;
+}
+</style>

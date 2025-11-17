@@ -4,31 +4,38 @@ import Cronometro from './Cronometro.vue';
 import ITarefa from '@/interfaces/ITarefa';
 import Box from './Box.vue';
 import { useStore } from '@/store';
-import { EXCLUIR_TAREFA } from '@/store/tipo-mutacoes';
+import { REMOVER_TAREFA } from '@/store/tipo-acoes';
 
 export default defineComponent({
   name: 'TarefaConcluida',
   props: {
     tarefa: { type: Object as PropType<ITarefa>, required: true },
   },
-  components: { Box, Cronometro, },
-  methods: {
-    excluir(idTarefa: string) {
-      this.store.commit(EXCLUIR_TAREFA, idTarefa);
-    }
-  },
-  setup() {
+  emits: ['aoClicarTarefa'],
+  components: { Box, Cronometro },
+  setup(props, { emit }) {
     const store = useStore();
+
+    const excluir = (idTarefa: string) => {
+      store.dispatch(REMOVER_TAREFA, idTarefa);
+    }
+
+    const tarefaClicada = (): void => {
+      emit('aoClicarTarefa', props.tarefa);
+    }
+
     return {
       store,
-    }
+      excluir,
+      tarefaClicada,
+    };
   }
 })
 </script>
 
 <template>
   <Box class="espacamento">
-    <div class="columns is-align-items-center">
+    <div class="columns is-align-items-center" @click="tarefaClicada">
       <div class="column is-4 descricao-tarefa cor-tarefa">
         {{ tarefa.descricao || 'Tarefa sem descrição' }}
       </div>
@@ -39,7 +46,7 @@ export default defineComponent({
         <Cronometro :tempoEmSegundos="tarefa.duracaoEmSegundos" />
       </div>
       <div>
-        <button class="button ml-2 is-danger" @click="excluir(tarefa.id)">
+        <button class="button ml-2 is-danger" @click.stop="excluir(tarefa.id)">
           <span class="icon is-small">
             <i class="fas fa-trash"></i>
           </span>
@@ -54,9 +61,12 @@ export default defineComponent({
   padding: 1.25rem;
   padding-left: 1.7rem;
 }
+
 .espacamento {
   margin-bottom: 2rem !important;
+  cursor: pointer;
 }
+
 .cor-cinza {
   color: var(--texto-tarefa);
 }

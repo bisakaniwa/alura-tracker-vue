@@ -29,7 +29,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { RouterLink } from 'vue-router';
 
 export default defineComponent({
   name: 'BarraLateral',
@@ -64,6 +63,7 @@ header {
   padding: 1rem;
   align-items: center;
 }
+
 .panel li {
   margin: 10px 0 10px 8px;
 }

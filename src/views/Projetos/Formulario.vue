@@ -2,10 +2,11 @@
   <section>
     <form @submit.prevent="salvar">
       <div class="field">
-        <label for="nomeDoProjeto" class="label">
+        <label for="nomeDoProjeto" class="label cor-label">
           Nome do Projeto:
         </label>
-        <input type="text" class="input" v-model="nomeDoProjeto" id="nomeDoProjeto" />
+        <input type="text" class="input" v-model="nomeDoProjeto" id="nomeDoProjeto"
+          placeholder="Qual nome você quer dar ao seu projeto?" />
       </div>
       <div class="field">
         <button type="submit" class="button">
@@ -17,49 +18,65 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { useStore } from "@/store";
-import { ADICIONA_PROJETO, ALTERA_PROJETO } from "@/store/tipo-mutacoes";
 import useNotificador from '@/hooks/notificador'
+import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from "@/store/tipo-acoes";
+import { useRouter } from "vue-router";
+import IProjeto from "@/interfaces/IProjeto";
 
 export default defineComponent({
   name: 'TelaFormulario',
   props: {
     id: { type: String }
   },
-  data() {
-    return {
-      nomeDoProjeto: '',
-    }
-  },
-  mounted() {
-    if (this.id) {
-      const projeto = this.store.state.projetos.find((projeto) => projeto.id === this.id);
-      this.nomeDoProjeto = projeto?.nome || '';
-    }
-  },
-  methods: {
-    salvar() {
-      if (this.id) {
-        this.store.commit(ALTERA_PROJETO, { id: this.id, nome: this.nomeDoProjeto });
-      } else {
-        this.store.commit(ADICIONA_PROJETO, this.nomeDoProjeto);
-      }
-      this.nomeDoProjeto = '';
-      this.notificar(TipoNotificacao.SUCESSO, 'Projeto salvo!',
-        'Prontinho! ;) Seu projeto já está disponível!');
-      this.$router.push('/projetos');
-    },
-
-  },
-  setup() {
+  setup(props) {
     const store = useStore();
+    const router = useRouter();
     const { notificar } = useNotificador();
+    const nomeDoProjeto = ref('');
+    const projetos = computed(() => store.state.projeto.projetos);
+
+    if (props.id) {
+      const projeto = projetos.value.find((projeto: IProjeto) => projeto.id === props.id);
+      nomeDoProjeto.value = projeto?.nome || '';
+    }
+
+    const lidarComSucesso = (): void => {
+      notificar(TipoNotificacao.SUCESSO, 'Projeto salvo!',
+        'Prontinho! ;) Seu projeto já está disponível!');
+      nomeDoProjeto.value = '';
+      router.push('/projetos');
+    };
+
+    const lidarComErro = (): void => {
+      notificar(TipoNotificacao.FALHA, 'Ops! Algo aconteceu :(',
+        'Tivemos um problema e não conseguimos salvar. Vamos tentar de novo?');
+    }
+
+    const salvar = () => {
+      if (props.id) {
+        store.dispatch(ALTERAR_PROJETO, { id: props.id, nome: nomeDoProjeto.value })
+          .then(() => lidarComSucesso())
+          .catch(() => lidarComErro());
+      } else {
+        store.dispatch(CADASTRAR_PROJETO, nomeDoProjeto.value)
+          .then(() => lidarComSucesso())
+          .catch(() => lidarComErro());
+      }
+    };
+
     return {
-      store,
-      notificar,
+      nomeDoProjeto,
+      salvar,
     };
   },
 });
 </script>
+
+<style scoped>
+.cor-label {
+  color: var(--texto-primario);
+}
+</style>
